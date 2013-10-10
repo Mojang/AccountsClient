@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+targetCompatibility = 1.6
+sourceCompatibility = 1.6
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+group = 'com.mojang.public'
+version = '0.0.1'
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.2.2'
+    testCompile 'junit:junit-dep:4.10'
+    testCompile 'org.hamcrest:hamcrest-library:1.2.1'
+    testCompile 'org.mockito:mockito-core:1.8.5'
+}
+
+test {
+    testLogging.showStandardStreams = true
+    exclude "**/integration/**", "**/**IntegrationTest*.*"
+}
+
+task integTest(type: Test) {
+    testLogging.showStandardStreams = true
+    include "**/integration/**", "**/**IntegrationTest*.*"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
