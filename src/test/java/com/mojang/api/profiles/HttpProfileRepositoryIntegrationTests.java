@@ -53,9 +53,4 @@ public class HttpProfileRepositoryIntegrationTests {
         assertThat(profiles.length, is(0));
     }
 
-    @Test
-    public void findProfilesByCriteria_criteriaForProfilesSpanningSeveralPagesProvided_returnsAllPagesInOneArray() throws Exception {
-        fail("not yet implemented");
-    }
-
 }
