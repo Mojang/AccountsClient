@@ -1,6 +1,8 @@
 package com.mojang.api.profiles;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.mojang.api.http.BasicHttpClient;
 import com.mojang.api.http.HttpBody;
 import com.mojang.api.http.HttpClient;
@@ -14,7 +16,7 @@ import java.util.List;
 
 public class HttpProfileRepository implements ProfileRepository {
 
-    private static final int MAX_PAGES_TO_CHECK = 100;
+    private static final int MAX_NAMES_LENGTH = 100;
     private static Gson gson = new Gson();
     private HttpClient client;
 
@@ -27,17 +29,17 @@ public class HttpProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public Profile[] findProfilesByCriteria(ProfileCriteria... criteria) {
+    public Profile[] findProfilesByCriteria(ProfileCriteria... profileCriteria) {
         try {
-            HttpBody body = new HttpBody(gson.toJson(criteria));
-            List<HttpHeader> headers = new ArrayList<HttpHeader>();
-            headers.add(new HttpHeader("Content-Type", "application/json"));
             List<Profile> profiles = new ArrayList<Profile>();
-            for (int i = 1; i <= MAX_PAGES_TO_CHECK; i++) {
-                ProfileSearchResult result = post(new URL("https://api.mojang.com/profiles/page/" + i), body, headers);
-                if (result.getSize() == 0) {
-                    break;
+            for(ProfileCriteria criteria : profileCriteria) {
+                if(criteria.getNames().length > MAX_NAMES_LENGTH) {
+                    throw new RuntimeException("Maximum length in a single query is 100, please use multiple queries.");
                 }
+                HttpBody body = new HttpBody(gson.toJson(criteria.getNames()));
+                List<HttpHeader> headers = new ArrayList<HttpHeader>();
+                headers.add(new HttpHeader("Content-Type", "application/json"));
+                ProfileSearchResult result = post(new URL("https://api.mojang.com/profiles/minecraft"), body, headers);
                 profiles.addAll(Arrays.asList(result.getProfiles()));
             }
             return profiles.toArray(new Profile[profiles.size()]);
@@ -49,7 +51,13 @@ public class HttpProfileRepository implements ProfileRepository {
 
     private ProfileSearchResult post(URL url, HttpBody body, List<HttpHeader> headers) throws IOException {
         String response = client.post(url, body, headers);
-        return gson.fromJson(response, ProfileSearchResult.class);
+        JsonParser parser = new JsonParser();
+        JsonArray arr = (JsonArray) parser.parse(response);
+        Profile[] profiles = new Profile[arr.size()];
+        for(int i=0; i<profiles.length; i++) {
+            profiles[i] = gson.fromJson(arr.get(i), Profile.class);
+        }
+        return new ProfileSearchResult(profiles);
     }
 
 }

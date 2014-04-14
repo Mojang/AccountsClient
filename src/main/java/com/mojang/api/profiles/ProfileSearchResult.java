@@ -4,6 +4,13 @@ public class ProfileSearchResult {
     private Profile[] profiles;
     private int size;
 
+    public ProfileSearchResult() {}
+
+    public ProfileSearchResult(Profile[] profiles) {
+        this.profiles = profiles;
+        this.size = profiles.length;
+    }
+
     public Profile[] getProfiles() {
         return profiles;
     }

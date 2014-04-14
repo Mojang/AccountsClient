@@ -2,19 +2,28 @@ package com.mojang.api.profiles;
 
 public class ProfileCriteria {
 
-    private final String name;
-    private final String agent;
+    private final String[] name;
 
+    @Deprecated
     public ProfileCriteria(String name, String agent) {
-        this.name = name;
-        this.agent = agent;
+        this(name);
     }
 
+    @Deprecated
     public String getAgent() {
-        return agent;
+        return null;
     }
 
+    @Deprecated
     public String getName() {
+        return name[0];
+    }
+
+    public ProfileCriteria(String... name) {
+        this.name = name;
+    }
+
+    public String[] getNames() {
         return name;
     }
 }

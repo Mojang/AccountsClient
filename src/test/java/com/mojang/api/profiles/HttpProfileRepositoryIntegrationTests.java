@@ -17,7 +17,7 @@ public class HttpProfileRepositoryIntegrationTests {
     @Test
     public void findProfilesByCriteria_existingNameProvided_returnsProfile() throws Exception {
         ProfileRepository repository = new HttpProfileRepository();
-        ProfileCriteria criteria = new ProfileCriteria("mollstam", AGENT);
+        ProfileCriteria criteria = new ProfileCriteria("mollstam");
 
         Profile[] profiles = repository.findProfilesByCriteria(criteria);
 
@@ -31,8 +31,7 @@ public class HttpProfileRepositoryIntegrationTests {
         ProfileRepository repository = new HttpProfileRepository();
 
         Profile[] profiles = repository.findProfilesByCriteria(
-                new ProfileCriteria("mollstam", AGENT),
-                new ProfileCriteria("jeb", AGENT)
+                new ProfileCriteria(new String[] {"mollstam", "jeb"})
         );
 
         assertThat(profiles.length, is(2));
@@ -46,7 +45,7 @@ public class HttpProfileRepositoryIntegrationTests {
     @Test
     public void findProfilesByCriteria_nonExistingNameProvided_returnsEmptyArray() throws Exception {
         ProfileRepository repository = new HttpProfileRepository();
-        ProfileCriteria criteria = new ProfileCriteria("doesnotexist$*not even legal", AGENT);
+        ProfileCriteria criteria = new ProfileCriteria("doesnotexist$*not even legal");
 
         Profile[] profiles = repository.findProfilesByCriteria(criteria);
 
