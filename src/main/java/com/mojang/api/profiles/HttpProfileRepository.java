@@ -16,8 +16,8 @@ import java.util.List;
 
 public class HttpProfileRepository implements ProfileRepository {
 
-    // You're not allowed to request more than 100 profiles per go.
-    private static final int PROFILES_PER_REQUEST = 100;
+    // You're not allowed to request more than 500 profiles per go.
+    private static final int PROFILES_PER_REQUEST = 500;
 
     private static Gson gson = new Gson();
     private final String agent;
