@@ -42,9 +42,9 @@ public class HttpProfileRepository implements ProfileRepository {
 
             int namesCount = names.length;
             int start = 0;
-            int i = 0;
+            int i = 1;
             do {
-                int end = PROFILES_PER_REQUEST * (i + 1);
+                int end = PROFILES_PER_REQUEST * i;
                 if (end > namesCount) {
                     end = namesCount;
                 }
